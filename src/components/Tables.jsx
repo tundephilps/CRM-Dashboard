@@ -1,46 +1,28 @@
-export default () => {
-  const tableItems = [
-    {
-      name: "Jane Cooper",
-      company: "Microsoft",
-      phonenumber: "080253434",
-      email: "jane@microsoft.com",
-      country: "United Kingdom",
-      status: "Active",
-    },
-    {
-      name: "Window wrapper",
-      company: "Yahoo",
-      phonenumber: "080253434",
-      email: "jane@microsoft.com",
-      country: "Brazil",
-      status: "Active",
-    },
-    {
-      name: "Unity loroin",
-      company: "Adobe",
-      phonenumber: "080253434",
-      email: "jane@microsoft.com",
-      country: "USA",
-      status: "Inactive",
-    },
-    {
-      name: "Background remover",
-      company: "Tesla",
-      phonenumber: "080253434",
-      email: "jane@microsoft.com",
-      country: "Israel",
-      status: "Active",
-    },
-    {
-      name: "Colon tiger",
-      company: "Google",
-      phonenumber: "080253434",
-      email: "jane@microsoft.com",
-      country: "Iran",
-      status: "Active",
-    },
-  ];
+import { useEffect, useState } from "react";
+import Pagination from "./Pagination";
+
+const PAGE_SIZE = 8;
+
+const Tables = ({ data }) => {
+  const [users, setUsers] = useState(data || []);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    if (!data) {
+      fetch("https://dummyjson.com/users")
+        .then((res) => res.json())
+        .then((data) => setUsers(data.users))
+        .catch((error) => console.error(error));
+    } else {
+      setUsers(data);
+    }
+  }, [data]);
+
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE
+  );
+  const totalPages = Math.ceil(users.length / PAGE_SIZE);
 
   return (
     <div className="">
@@ -58,32 +40,38 @@ export default () => {
             </tr>
           </thead>
           <tbody className="text-[#292d32] font-medium divide-y">
-            {tableItems.map((item, idx) => (
-              <tr key={idx}>
-                <td className="pr-6 py-4 whitespace-nowrap">{item.name}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{item.company}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">
-                  {item.phonenumber}
-                </td>
-
+            {paginatedUsers.map((item, id) => (
+              <tr key={id}>
+                <td className="pr-6 py-4 whitespace-nowrap">{item.username}</td>
+                <td className="pr-6 py-4 whitespace-nowrap">{item.role}</td>
+                <td className="pr-6 py-4 whitespace-nowrap">{item.phone}</td>
                 <td className="pr-6 py-4 whitespace-nowrap">{item.email}</td>
-                <td className="pr-6 py-4 whitespace-nowrap">{item.country}</td>
+                <td className="pr-6 py-4 whitespace-nowrap">
+                  {item.address.country}
+                </td>
                 <td className="text-center whitespace-nowrap">
                   <span
-                    className={`px-8  py-2 rounded-md font-semibold text-xs ${
-                      item.status == "Active"
-                        ? "text-[#008767] font-bold bg-[#16c098]/50 border border-[#008767]"
-                        : "text-[#df0404] bg-[#ffc5c5] border border-[#df0404]"
+                    className={`px-8 py-2 rounded-md font-semibold text-xs ${
+                      item.status === "Active"
+                        ? "text-[#df0404] bg-[#ffc5c5] border border-[#df0404]"
+                        : "text-[#008767] font-bold bg-[#16c098]/50 border border-[#008767]"
                     }`}
                   >
-                    {item.status}
+                    Active
                   </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
 };
+
+export default Tables;

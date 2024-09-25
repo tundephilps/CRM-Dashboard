@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Stats1 from "../assets/images/Stats1.png";
 
@@ -7,6 +7,15 @@ import Stats3 from "../assets/images/Stats3.png";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa6";
 
 const Status = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://dummyjson.com/users")
+      .then((res) => res.json())
+      .then((data) => setUsers(data.users))
+      .catch((error) => console.error(error));
+  }, []);
+
   return (
     <div className="lg:h-[151px] py-6 w-full bg-white rounded-3xl flex gap-8 lg:flex-row flex-col px-12 items-center lg:justify-between   mt-8 ">
       <div className="flex flex-row items-center gap-3 ">
