@@ -8,3 +8,7 @@ DESCRIPTION;
 CRM Dashboard
 
 TECHNOLOGIES USED; Redux Toolkit Jest React Router Dom Tailwind Css
+
+Auth Details;
+Username: emilys
+Password: emilyspass
